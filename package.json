@@ -1,0 +1,26 @@
+{
+  "name": "subfetcher",
+  "version": "1.0.0",
+  "main": "fetch.js",
+  "repository": "https://github.com/nuncaesqueca/subfetcher.git",
+  "author": "nuncaesqueca <alanbruno@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "fetch": "npx eslint fetch.js && mkdirp dist && npx babel fetch.js --out-file dist/index.js && node dist/index.js"
+  },
+  "dependencies": {
+    "commander": "^2.19.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.0",
+    "mkdirp": "^0.5.1"
+  }
+}
