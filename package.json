@@ -6,7 +6,11 @@
   "author": "nuncaesqueca <alanbruno@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "fetch": "npx eslint fetch.js && mkdirp dist && npx babel fetch.js --out-file dist/index.js && node dist/index.js"
+    "fetch": "npx eslint src/**",
+    "dev": "npx babel src --watch --out-dir dist"
+  },
+  "bin": {
+    "cli-app": "fetch.js"
   },
   "dependencies": {
     "commander": "^2.19.0"
