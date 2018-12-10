@@ -1,4 +1,4 @@
-import Program from 'commander';
+import Fetch from 'commander';
 import File from './fileManager';
 
 const listFunction = ({ moviesFolder }) => {
@@ -7,9 +7,9 @@ const listFunction = ({ moviesFolder }) => {
   });
 };
 
-Program
+Fetch
   .version('0.0.1')
   .option('-f, --movies-folder <required>', 'Tell me the path to your movies!')
   .action(listFunction);
 
-Program.parse(process.argv);
+Fetch.parse(process.argv);
