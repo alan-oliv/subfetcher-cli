@@ -1,9 +1,11 @@
 import Fetch from 'commander';
-import File from './file-manager';
+import Tree from './tree';
 
 const listFunction = ({ moviesFolder }) => {
-  const a = File.listContents(moviesFolder);
-  console.log(a);
+  const moviesTree = new Tree(moviesFolder);
+  const moviesTreeContents = moviesTree.toList();
+  // const moviesTreeContents2 = moviesTree._listContents(moviesFolder, true)
+  console.log(moviesTreeContents);
 };
 
 Fetch
