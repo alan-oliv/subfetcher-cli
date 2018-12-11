@@ -2,9 +2,8 @@ import Fetch from 'commander';
 import File from './file-manager';
 
 const listFunction = ({ moviesFolder }) => {
-  File.listContents(moviesFolder).then((content) => {
-    console.log(content);
-  });
+  const a = File.listContents(moviesFolder);
+  console.log(a);
 };
 
 Fetch

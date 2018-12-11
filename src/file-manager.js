@@ -1,37 +1,34 @@
 import fs from 'fs';
-import { promisify } from 'util';
 
 class File {
-  static async listContents(path, recursive = true) {
+  static listContents(path, recursive = true) {
     try {
-      const readdir = promisify(fs.readdir);
-      const contents = await readdir(path).then(content => content);
+      const contents = fs.readdirSync(path);
 
       if (recursive) {
         contents.forEach(async (folder) => {
           const folderPath = `${path}\\${folder}`;
-          const folderStat = await this.listStats(folderPath);
+          const folderStat = this.listStats(folderPath);
           // TO DO
           if (folderStat.isDirectory()) {
-            await this.listContents(folderPath);
+            this.listContents(folderPath);
           }
         });
       }
+
       return contents;
     } catch (e) {
       return e;
     }
   }
 
-  static async listStats(path) {
+  static listStats(path) {
     try {
-      const stat = promisify(fs.stat);
-      const contents = await stat(path).then(content => content);
-      return contents;
+      return fs.statSync(path);
     } catch (e) {
       return e;
     }
-  };
+  }
 }
 
 export default File;
