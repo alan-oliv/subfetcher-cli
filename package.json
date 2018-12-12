@@ -13,6 +13,7 @@
     "cli-app": "fetch.js"
   },
   "dependencies": {
+    "babel-eslint": "^10.0.1",
     "commander": "^2.19.0"
   },
   "devDependencies": {

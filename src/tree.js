@@ -1,16 +1,19 @@
-/* eslint-disable no-underscore-dangle */
 import fs from 'fs';
 
 class Tree {
+  #path;
+  #recursive;
+  #pathContents;
+
   constructor(path, recursive = true) {
-    this._path = path;
-    this._recursive = recursive;
-    this._pathContents = [];
+    this.#path = path;
+    this.#recursive = recursive;
+    this.#pathContents = [];
   }
 
   toList = () => {
-    this._pathContents = [];
-    return this._listContents(this._path, this._recursive);
+    this.#pathContents = [];
+    return this._listContents(this.#path, this._recursive);
   }
 
   _listContents = (path, recursive = true) => {
@@ -19,7 +22,7 @@ class Tree {
       if (recursive) {
         contents.forEach(async (folder) => {
           const folderPath = `${path}\\${folder}`;
-          this._pathContents.push(folder);
+          this.#pathContents.push(folder);
 
           const folderStat = Tree._listStats(folderPath);
           if (folderStat.isDirectory()) {
@@ -28,13 +31,13 @@ class Tree {
         });
       }
 
-      return this._pathContents;
+      return this.#pathContents;
     } catch (e) {
       return e;
     }
   }
 
-  static _listStats(path) {
+  static _listStats = (path) => {
     try {
       return fs.statSync(path);
     } catch (e) {
