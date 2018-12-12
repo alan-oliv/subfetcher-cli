@@ -9,14 +9,15 @@ class Tree {
     this.#path = path;
     this.#recursive = recursive;
     this.#pathContents = [];
+    console.log(this);
   }
 
   toList = () => {
     this.#pathContents = [];
-    return this._listContents(this.#path, this._recursive);
+    return this.#_listContents(this.#path, this._recursive);
   }
 
-  _listContents = (path, recursive = true) => {
+  #_listContents = (path, recursive = true) => {
     try {
       const contents = fs.readdirSync(path);
       if (recursive) {
@@ -24,9 +25,9 @@ class Tree {
           const folderPath = `${path}\\${folder}`;
           this.#pathContents.push(folder);
 
-          const folderStat = Tree._listStats(folderPath);
+          const folderStat = Tree.#_listStats(folderPath);
           if (folderStat.isDirectory()) {
-            this._listContents(folderPath);
+            this.#_listContents(folderPath);
           }
         });
       }
@@ -37,7 +38,7 @@ class Tree {
     }
   }
 
-  static _listStats = (path) => {
+  static #_listStats = (path) => {
     try {
       return fs.statSync(path);
     } catch (e) {
