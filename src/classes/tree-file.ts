@@ -1,4 +1,4 @@
- import IFileSystem from '../interfaces/ifile-system';
+ import { IFileSystem } from '../interfaces';
  import * as Path from 'path';
 
 export default class TreeFile implements IFileSystem {

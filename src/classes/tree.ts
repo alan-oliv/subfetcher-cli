@@ -23,7 +23,7 @@ export default class Tree {
     return this.listContents(this.path, true, false);
   }
 
-  public filesOnly(): Array<string> {
+  public filesOnly(extensions: Array<string> ): Array<string> {
     this.contents = [];
     return this.listContents(this.path, false, true);
   }

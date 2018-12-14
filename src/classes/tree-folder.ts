@@ -1,4 +1,4 @@
- import IFileSystem from '../interfaces/ifile-system';
+import { IFileSystem } from '../interfaces';
  import { TreeFile } from './';
  import * as Path from 'path';
 
