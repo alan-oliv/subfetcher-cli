@@ -6,7 +6,7 @@
   "author": "nuncaesqueca <alanbruno@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": ""
+    "typescript": "npx tsc"
   },
   "bin": {
     "cli-app": "fetch.js"

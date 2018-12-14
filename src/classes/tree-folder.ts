@@ -10,4 +10,16 @@ export default class TreeFolder implements IFileSystem {
   constructor(name: string) {
     this.name = name;
   }
+
+  public addFile(file: TreeFile): void {
+    if(this.files) {
+      this.files.push(file);
+    }
+  }
+
+  public addFolder(folder: TreeFolder): void {
+    if(this.folders) {
+      this.folders.push(folder);
+    }
+  }
 }
