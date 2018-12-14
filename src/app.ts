@@ -1,11 +1,11 @@
 import Fetch from 'commander';
 import Process from 'process';
-import Tree from './classes/tree';
+import { Tree } from './classes';
 
-const listFunction = ({ path = '/home/alanoliveira/Workspace/subfetcher-cli/Filmes' }: { path:string }) => {
-  const fileTree = new Tree(path, true);
-  const folderContents = fileTree.toList();
-  console.log(folderContents);
+const listFunction = ({ path = 'D:\\Workspace\\subfetcher\\Filmes' }: { path:string }): void => {
+  const fileTree: Tree = new Tree(path, true);
+  const folderContents: any = fileTree.filesOnly();
+  // console.log(folderContents);
 };
 
 Fetch

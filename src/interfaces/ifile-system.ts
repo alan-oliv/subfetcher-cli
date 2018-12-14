@@ -1,4 +1,6 @@
-// TO DO: ADD SIZE AND EXTENSIONS PROPERTIES
 export default interface IFileSystem {
+  path: string;
+  extension?: string;
   name: string;
+  size?: number;
 }

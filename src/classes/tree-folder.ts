@@ -1,24 +1,26 @@
  import IFileSystem from '../interfaces/ifile-system';
- import TreeFile from './tree-file';
+ import { TreeFile } from './';
+ import * as Path from 'path';
 
- // TO DO: ADD SIZE AND EXTENSIONS PROPERTIES
 export default class TreeFolder implements IFileSystem {
+  path: string;
   name: string;
   files?: Array<TreeFile> = [];
   folders?: Array<TreeFolder> = [];
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(path: string) {
+    this.path = path;
+    this.name = Path.basename(path);
   }
 
   public addFile(file: TreeFile): void {
-    if(this.files) {
+    if (this.files) {
       this.files.push(file);
     }
   }
 
   public addFolder(folder: TreeFolder): void {
-    if(this.folders) {
+    if (this.folders) {
       this.folders.push(folder);
     }
   }

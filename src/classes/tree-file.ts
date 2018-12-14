@@ -1,10 +1,16 @@
  import IFileSystem from '../interfaces/ifile-system';
+ import * as Path from 'path';
 
- // TO DO: ADD SIZE AND EXTENSIONS PROPERTIES
 export default class TreeFile implements IFileSystem {
+  path: string;
+  extension: string;
   name: string;
+  size: number;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(path: string, size: number) {
+    this.path = path;
+    this.extension = Path.extname(path);
+    this.name = Path.basename(path).replace(this.extension, '');
+    this.size = size;
   }
 }
