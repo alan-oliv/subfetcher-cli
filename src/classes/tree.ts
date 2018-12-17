@@ -3,14 +3,17 @@ import * as Path from 'path';
 import { TreeFile, TreeFolder } from './';
 
 export default class Tree {
+  private readonly megabytes: number = 1000000.0;
   private readonly path: string;
   private readonly recursive: boolean = true;
+  private readonly extensions?: Array<string>;
   private treeContents: TreeFolder;
   private contents: Array<string> = [];
 
-  constructor(path: string, recursive: boolean) {
+  constructor(path: string, recursive: boolean, extensions?: string) {
     this.path = path;
     this.recursive = recursive;
+    this.extensions = extensions ? extensions.replace(/[ .]/g, '').split(',') : [];
     this.treeContents = new TreeFolder(path);
   }
 
@@ -23,7 +26,7 @@ export default class Tree {
     return this.listContents(this.path, true, false);
   }
 
-  public filesOnly(extensions: Array<string> ): Array<string> {
+  public filesOnly(): Array<string> {
     this.contents = [];
     return this.listContents(this.path, false, true);
   }
@@ -56,11 +59,13 @@ export default class Tree {
       const currentFolder = nestedFolder ? nestedFolder : this.treeContents;
 
       if (innerStat.isFile()) {
-        const mbFileSize: number = innerStat.size / 1000000.0;
+        const mbFileSize: number = innerStat.size / this.megabytes;
         const innerFile: TreeFile = new TreeFile(innerPath, mbFileSize);
+        const currentExtension = innerFile.extension.replace(/[ .]/g, '');
+        const matchExtensions = this.extensions && this.extensions.includes(currentExtension, 0);
 
         if (filesOnly) {
-          this.contents.push(`${innerFile.name}${innerFile.extension}`);
+          matchExtensions && this.contents.push(`${innerFile.name}${innerFile.extension}`);
         } else {
           currentFolder.addFile(innerFile);
         }

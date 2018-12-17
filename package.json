@@ -16,6 +16,7 @@
     "commander": "^2.19.0"
   },
   "devDependencies": {
+    "tslint-config-airbnb-base": "^0.2.0",
     "typescript": "^3.2.2"
   }
 }
