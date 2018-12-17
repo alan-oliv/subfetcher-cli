@@ -67,7 +67,7 @@ export default class Tree {
         if (filesOnly) {
           matchExtensions && this.contents.push(`${innerFile.name}${innerFile.extension}`);
         } else {
-          currentFolder.addFile(innerFile);
+          matchExtensions && currentFolder.addFile(innerFile);
         }
       } else if (innerStat.isDirectory()) {
         const innerFolder: TreeFolder = new TreeFolder(innerPath);
