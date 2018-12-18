@@ -4,34 +4,38 @@ import OS from 'opensubtitles-api';
 import { Tree, TreeFolder, Subtitle, TreeFile } from './classes';
 const readline = require('readline');
 
-// const OpenSubtitles = new OS({
-//   useragent: 'TemporaryUserAgent',
-//   ssl: true
-// });
+const OpenSubtitles = new OS({
+  useragent: 'TemporaryUserAgent',
+  ssl: true
+});
+
+
+readline.emitKeypressEvents(Process.stdin);
+Process.stdin.setRawMode && Process.stdin.setRawMode(true);
+let downloadList: any;
 
 const list = ({ path = '/home/alanoliveira/Workspace/subfetcher-cli/Filmes', extensions }: { path: string, extensions: string }): void => {
   const fileTree: Tree = new Tree(path, true, extensions);
-  const folderContents: TreeFolder = fileTree.all();
-  const downloadList = downloadSubtitle(folderContents);
+  const movieFiles: Array<TreeFile> = fileTree.filesOnly();
+  downloadList = downloadSubtitle(movieFiles);
+  downloadList.next();
 
-  readline.emitKeypressEvents(Process.stdin);
-  Process.stdin.setRawMode && Process.stdin.setRawMode(true);
   Process.stdin.on('keypress', (str, key) => {
     if (key.ctrl && key.name === 'c') {
       Process.exit();
-    } else {
-      const nextMovie = downloadList.next();
-      console.log(nextMovie.value);
     }
   });
 };
 
-
-function* downloadSubtitle(folderContents: TreeFolder) {
-  if (folderContents.folders) {
-    for (let i of folderContents.folders) {
-
-      yield i.name;
+function* downloadSubtitle(folderContents: Array<TreeFile>, currentMovie?: string) {
+  if (folderContents) {
+    for (let i of folderContents) {
+      console.log(`Downloading subs for ${i.name}?`)
+      const a = getSub(i).then((item: any) => {
+        console.log('downloaded');
+        downloadList.next();
+      });
+      yield;
     }
   }
 }
@@ -59,15 +63,12 @@ function* downloadSubtitle(folderContents: TreeFolder) {
 //   })
 // }
 
-// const getSub = async (file: TreeFile): Promise<object> => {
-//   return new Promise((resolve, reject) => {
-//     OpenSubtitles.search({
-//       sublanguageid: 'pob',
-//       path: file.path,
-//       extensions: ['srt']
-//     }).then((item: any) => resolve(item));
-//   });
-// }
+const getSub = (file: TreeFile) => OpenSubtitles.search({
+  sublanguageid: 'pob',
+  path: file.path,
+  extensions: ['srt']
+});
+
 
 
 // pb.forEach(({ filename, url, score }: { filename: string, url: string, score: number }) => {
@@ -85,6 +86,7 @@ function* downloadSubtitle(folderContents: TreeFolder) {
 
 
 Fetch
+
   .version('0.0.1')
   .option('-f, --path <required>', 'Tell me the path to your movies!')
   .option('-e, --extensions <required>', 'Tell me your movies extensions!')

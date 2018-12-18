@@ -8,7 +8,7 @@ export default class Tree {
   private readonly recursive: boolean = true;
   private readonly extensions?: Array<string>;
   private treeContents: TreeFolder;
-  private contents: Array<string> = [];
+  private contents: any;
 
   constructor(path: string, recursive: boolean, extensions?: string) {
     this.path = path;
@@ -26,7 +26,7 @@ export default class Tree {
     return this.listContents(this.path, true, false);
   }
 
-  public filesOnly(): Array<string> {
+  public filesOnly(): Array<TreeFile> {
     this.contents = [];
     return this.listContents(this.path, false, true);
   }
@@ -65,7 +65,7 @@ export default class Tree {
         const matchExtensions = this.extensions && this.extensions.includes(currentExtension, 0);
 
         if (filesOnly) {
-          matchExtensions && this.contents.push(`${innerFile.name}${innerFile.extension}`);
+          matchExtensions && this.contents.push(innerFile);
         } else {
           matchExtensions && currentFolder.addFile(innerFile);
         }
