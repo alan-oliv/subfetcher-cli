@@ -12,9 +12,9 @@
     "cli-app": "fetch.js"
   },
   "dependencies": {
-    "@types/node": "^10.12.12",
     "@types/request": "^2.48.1",
     "commander": "^2.19.0",
+    "opensubtitles-api": "^4.1.0",
     "request": "^2.88.0"
   },
   "devDependencies": {
