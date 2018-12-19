@@ -9,7 +9,7 @@ export default class TreeFile implements IFileSystem {
 
   constructor(path: string, size: number) {
     this.path = path;
-    this.extension = Path.extname(path);
+    this.extension = Path.extname(path).replace(/\./g, '');
     this.name = Path.basename(path).replace(this.extension, '');
     this.size = size;
   }

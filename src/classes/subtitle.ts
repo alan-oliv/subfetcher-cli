@@ -2,12 +2,14 @@
  import * as Path from 'path';
 
 export default class Subtitle {
-  private filename: string;
-  private url: string;
+  public filename: string;
+  public extension: string;
+  public url: string;
   private score: number;
 
-  constructor(fileLink: string, url: string, score: number) {
-    this.filename = fileLink;
+  constructor(filename: string, extension: string, url: string, score: number) {
+    this.filename = filename;
+    this.extension = extension;
     this.url = url;
     this.score = score;
   }
