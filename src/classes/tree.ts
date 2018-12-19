@@ -13,7 +13,9 @@ export default class Tree {
   constructor(path: string, recursive: boolean, extensions?: string) {
     this.path = path;
     this.recursive = recursive;
-    this.extensions = extensions ? extensions.replace(/[ .]/g, '').split(',') : [];
+    this.extensions = extensions
+      ? extensions.replace(/[ .]/g, '').split(',')
+      : [];
     this.treeContents = new TreeFolder(path);
   }
 
@@ -31,20 +33,31 @@ export default class Tree {
     return this.listContents(this.path, false, true);
   }
 
-  private listContents = (path: string, foldersOnly: boolean = false, filesOnly: boolean = false, nestedFolder?: TreeFolder): any => {
+  private listContents = (
+    path: string,
+    foldersOnly: boolean = false,
+    filesOnly: boolean = false,
+    nestedFolder?: TreeFolder
+  ): any => {
     try {
       const contents: Array<string> = fs.readdirSync(path);
-      contents.forEach((folder) => {
+      contents.forEach(folder => {
         const innerPath: string = Path.join(path, folder);
         const innerStat: any = this.listStats(innerPath);
-        this.handleInnerStat(innerPath, innerStat, foldersOnly, filesOnly, nestedFolder)
+        this.handleInnerStat(
+          innerPath,
+          innerStat,
+          foldersOnly,
+          filesOnly,
+          nestedFolder
+        );
       });
 
-      return (this.contents.length) ? this.contents : this.treeContents;
+      return this.contents.length ? this.contents : this.treeContents;
     } catch (e) {
       return e;
     }
-  }
+  };
 
   private listStats = (path: string): any => {
     try {
@@ -52,9 +65,15 @@ export default class Tree {
     } catch (e) {
       return e;
     }
-  }
+  };
 
-  private handleInnerStat = (innerPath: string, innerStat: any, foldersOnly: boolean = false, filesOnly: boolean = false, nestedFolder?: TreeFolder): void => {
+  private handleInnerStat = (
+    innerPath: string,
+    innerStat: any,
+    foldersOnly: boolean = false,
+    filesOnly: boolean = false,
+    nestedFolder?: TreeFolder
+  ): void => {
     try {
       const currentFolder = nestedFolder ? nestedFolder : this.treeContents;
 
@@ -62,7 +81,8 @@ export default class Tree {
         const mbFileSize: number = innerStat.size / this.megabytes;
         const innerFile: TreeFile = new TreeFile(innerPath, mbFileSize);
         const currentExtension = innerFile.extension.replace(/[ .]/g, '');
-        const matchExtensions = this.extensions && this.extensions.includes(currentExtension, 0);
+        const matchExtensions =
+          this.extensions && this.extensions.includes(currentExtension, 0);
 
         if (filesOnly) {
           matchExtensions && this.contents.push(innerFile);
@@ -84,5 +104,5 @@ export default class Tree {
     } catch (e) {
       return e;
     }
-  }
+  };
 }

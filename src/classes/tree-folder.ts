@@ -1,6 +1,6 @@
 import { IFileSystem } from '../interfaces';
- import { TreeFile } from './';
- import * as Path from 'path';
+import { TreeFile } from './';
+import * as Path from 'path';
 
 export default class TreeFolder implements IFileSystem {
   path: string;
