@@ -2,7 +2,7 @@ import Fetch from 'commander';
 import Process from 'process';
 import Readline from 'readline';
 import { Tree, TreeFile, SubtitleClient } from './classes';
-class App {
+class Application {
   constructor(rdConfig: any, processConfig: any) {
     rdConfig.emitKeypressEvents(Process.stdin);
     processConfig.stdin.setRawMode && processConfig.stdin.setRawMode(true);
@@ -22,15 +22,15 @@ class App {
   }): void => {
     const fileTree: Tree = new Tree(path, true, extensions);
     const movieFiles: Array<TreeFile> = fileTree.filesOnly();
-    new SubtitleClient(movieFiles);
+    const OpenSubtitles = new SubtitleClient(movieFiles);
   };
 }
 
-const Application = new App(Readline, Process);
+const App = new Application(Readline, Process);
 
 Fetch.version('0.0.1')
   .option('-f, --path <required>', 'Tell me the path to your movies!')
   .option('-e, --extensions <required>', 'Tell me your movies extensions!')
-  .action(Application.init);
+  .action(App.init);
 
 Fetch.parse(Process.argv);

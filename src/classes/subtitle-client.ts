@@ -1,71 +1,39 @@
 import { ISubtitleClient } from '../interfaces';
-import { Tree, Subtitle, TreeFile } from '../classes';
-import OS from 'opensubtitles-api';
-import fs from 'fs';
+import { Subtitle, TreeFile, OpenSubtitles } from '../classes';
 import http, { ClientRequest } from 'http';
+import fs from 'fs';
+import chalk from 'chalk';
 
 export default class SubtitleClient implements ISubtitleClient {
-  private downloadList:  IterableIterator<void>;
-  private OpenSubtitles: any;
+  private downloadList: IterableIterator<void>;
+  private OSClient: OpenSubtitles;
 
   constructor(tree: Array<TreeFile>) {
     this.downloadList = this.search(tree);
-
-    this.OpenSubtitles = new OS({
-      useragent: 'TemporaryUserAgent'
-    });
-
+    this.OSClient = new OpenSubtitles('TemporaryUserAgent');
     this.downloadList.next();
   }
 
   public *search(folderContents: Array<TreeFile>): IterableIterator<void> {
-    let subtitle: Subtitle;
-
     for (let file of folderContents) {
-      console.log(`Downloading subs for ${file.name}${file.extension}`);
+      console.log(chalk` \nSearching subtitles for {blue ${file.name}}`);
 
-      this.OpenSubtitles.search({
-        sublanguageid: 'pob',
-        path: file.path,
-        extensions: ['srt']
-      })
-        .then(async (sub: any) => {
-          let result: string = '';
-          let color: string = '';
-
-          if (sub.pb) {
-            subtitle = new Subtitle(
-              sub.pb.filename,
-              sub.pb.format,
-              sub.pb.url,
-              sub.pb.score
+      this.OSClient.search(file)
+        .then(async (sub: Subtitle) => {
+          try {
+            await this.download(
+              sub,
+              `${file.path}${file.name}.${sub.extension}`
             );
-            const videoExtension = new RegExp(file.extension, 'g');
-            const destinationPath = file.path.replace(
-              videoExtension,
-              subtitle.extension
-            );
-
-            try {
-              await this.download(subtitle, destinationPath);
-              result = `Success`;
-              color = `\x1b[36m%s\x1b[0m`;
-            } catch (e) {
-              result = `Failure ${e}`;
-              color = `\x1b[31m%s\x1b[0m`;
-            }
-          } else {
-            result = 'Subtitle not found';
-            color = `\x1b[31m%s\x1b[0m`;
+            console.log(chalk`{bgGreenBright.black  Success }`);
+          } catch (e) {
+            console.log(chalk`{bgRedBright.black  Failure: ${!sub ? `Subtitle not found` : e} }`);
           }
-          result && console.log(color, result);
         })
         .then(() => {
           this.downloadList.next();
         })
-        .catch((error: any) => {
-          console.log(error);
-        });
+        .catch((error: any) => { });
 
       yield;
     }
