@@ -1,16 +1,19 @@
 import { ISubtitleClient } from '../interfaces';
-import { Subtitle, TreeFile, OpenSubtitles } from '../classes';
+import { Subtitle, TreeFile } from '../classes';
 import http, { ClientRequest } from 'http';
 import fs from 'fs';
 import chalk from 'chalk';
 
-export default class SubtitleClient implements ISubtitleClient {
-  private downloadList: IterableIterator<void>;
-  private OSClient: OpenSubtitles;
+export default class SubtitleClient {
+  private downloadList?: IterableIterator<void>;
+  private client: any;
 
-  constructor(tree: Array<TreeFile>) {
-    this.downloadList = this.search(tree);
-    this.OSClient = new OpenSubtitles('TemporaryUserAgent');
+  constructor(client: any) {
+    this.client = client;
+  }
+
+  public get = (movieTree: Array<TreeFile>): void => {
+    this.downloadList = this.search(movieTree);
     this.downloadList.next();
   }
 
@@ -18,7 +21,7 @@ export default class SubtitleClient implements ISubtitleClient {
     for (let file of folderContents) {
       console.log(chalk` \nSearching subtitles for {blue ${file.name}}`);
 
-      this.OSClient.search(file)
+      this.client.search(file)
         .then(async (sub: Subtitle) => {
           try {
             await this.download(
@@ -31,9 +34,11 @@ export default class SubtitleClient implements ISubtitleClient {
           }
         })
         .then(() => {
-          this.downloadList.next();
+          this.downloadList && this.downloadList.next();
         })
-        .catch((error: any) => { });
+        .catch((error: any) => {
+          console.log(error);
+         });
 
       yield;
     }

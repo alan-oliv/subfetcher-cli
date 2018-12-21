@@ -2,6 +2,8 @@ import Fetch from 'commander';
 import Process from 'process';
 import Readline from 'readline';
 import { Tree, TreeFile, SubtitleClient } from './classes';
+import { OpenSubtitles } from './classes/clients';
+
 class Application {
   constructor(rdConfig: any, processConfig: any) {
     rdConfig.emitKeypressEvents(Process.stdin);
@@ -14,15 +16,18 @@ class Application {
   }
 
   public init = ({
-    path = 'D:\\_aloliv\\Movies2',
-    extensions = 'mp4'
+    path,
+    extensions
   }: {
     path: string;
     extensions: string;
   }): void => {
     const fileTree: Tree = new Tree(path, true, extensions);
     const movieFiles: Array<TreeFile> = fileTree.filesOnly();
-    const OpenSubtitles = new SubtitleClient(movieFiles);
+
+    const OSClient = new OpenSubtitles();
+    const subManager = new SubtitleClient(OSClient);
+    subManager.get(movieFiles);
   };
 }
 
