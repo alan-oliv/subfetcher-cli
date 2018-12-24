@@ -18,16 +18,20 @@ export default class OpenSubtitles implements ISubtitleClient {
         limit: 'all'
       })
       .then(async (sub: any) => {
-        console.log(sub[0]);
-
-        //method already returning array - so transform this return into a list of subs to respective languages
         if (sub.pb) {
-          return new Subtitle(
-            sub.pb.filename,
-            sub.pb.format,
-            sub.pb.url,
-            sub.pb.score
-          );
+          const subsInLanguage: Array<Subtitle> = [];
+
+          sub.pb.forEach((languageSubtitle: any) => {
+            const languageItem = new Subtitle(
+              languageSubtitle.filename,
+              languageSubtitle.format,
+              languageSubtitle.url,
+              languageSubtitle.score
+            );
+            subsInLanguage.push(languageItem);
+          });
+
+          return subsInLanguage;
         }
       });
 }

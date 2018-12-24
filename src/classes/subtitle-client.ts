@@ -22,16 +22,18 @@ export default class SubtitleClient {
       console.log(chalk` \nSearching subtitles for {blue ${file.name}}`);
 
       this.client.search(file)
-        .then(async (sub: Subtitle) => {
-          try {
-            await this.download(
-              sub,
-              `${file.path}${file.name}.${sub.extension}`
-            );
-            console.log(chalk`{bgGreenBright.black  Success }`);
-          } catch (e) {
-            console.log(chalk`{bgRedBright.black  Failure: ${!sub ? `Subtitle not found` : e} }`);
-          }
+        .then(async (movieSubs: Array<Subtitle>) => {
+          movieSubs.forEach(async (sub: Subtitle) => {
+            try {
+              await this.download(
+                sub,
+                `${file.path}${sub.filename}`
+              );
+              console.log(chalk`{bgGreenBright.black ${sub.filename} successfully downloaded}`);
+            } catch (e) {
+              console.log(chalk`{bgRedBright.black  Failure: ${!sub ? `Subtitle not found` : e} }`);
+            }
+          });
         })
         .then(() => {
           this.downloadList && this.downloadList.next();
