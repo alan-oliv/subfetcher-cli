@@ -6,7 +6,8 @@
   "author": "nuncaesqueca <alanbruno@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "typescript": "npx tsc"
+    "dev": "npx tsc --watch",
+    "lint": "npx tslint 'src/**/*.ts'"
   },
   "bin": {
     "cli-app": "fetch.js"
@@ -18,6 +19,7 @@
     "opensubtitles-api": "^4.1.0"
   },
   "devDependencies": {
+    "tslint": "^5.12.0",
     "typescript": "^3.2.2"
   }
 }

@@ -20,7 +20,6 @@ export default class OpenSubtitles implements ISubtitleClient {
       .then(async (sub: any) => {
         if (sub.pb) {
           const subsInLanguage: Array<Subtitle> = [];
-
           sub.pb.forEach((languageSubtitle: any) => {
             const languageItem = new Subtitle(
               languageSubtitle.filename,
