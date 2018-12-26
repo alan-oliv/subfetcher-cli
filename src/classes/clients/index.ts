@@ -1,3 +1,3 @@
 import openSubtitles from './open-subtitles';
 
-export { openSubtitles };
+export { openSubtitles as OpenSubtitles };

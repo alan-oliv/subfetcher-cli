@@ -10,12 +10,10 @@ export default class Tree {
   private treeContents: TreeFolder;
   private contents: any;
 
-  constructor(path: string, recursive: boolean, extensions?: string) {
+  constructor(path: string, recursive: boolean, extensions?: string[]) {
     this.path = path;
     this.recursive = recursive;
-    this.extensions = extensions
-      ? extensions.replace(/[ .]/g, '').split(',')
-      : [];
+    this.extensions = extensions;
     this.treeContents = new TreeFolder(path);
   }
 

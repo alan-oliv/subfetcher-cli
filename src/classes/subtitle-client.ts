@@ -5,61 +5,38 @@ import chalk from 'chalk';
 import process from 'process';
 
 export default class SubtitleClient {
-  private downloadList?: IterableIterator<void>;
+  private downloadList?: any;
   private client: any;
 
   constructor(client: any) {
     this.client = client;
   }
 
-  public get = (movieTree: TreeFile[]): void => {
-    this.downloadList = this.search(movieTree);
-    this.downloadList.next();
+  public get = (movieTree: TreeFile[], languages: string[]): void => {
+    this.downloadList = this.search(movieTree, languages);
   }
 
-  public *search(folderContents: TreeFile[]): IterableIterator<void> {
+  public async search(folderContents: TreeFile[], languages: string[]): Promise<void> {
     for (const file of folderContents) {
       console.log(chalk` \nSearching subtitles for {blue ${file.name}}`);
+      const movieSubs: Subtitle[] = await this.client.search(file, languages);
 
-      this.client
-        .search(file)
-        .then(async (movieSubs: Subtitle[]) => {
-          if (movieSubs) {
-            movieSubs.forEach(async (sub: Subtitle) => {
-              try {
-                await this.download(sub, `${file.path}${sub.filename}`);
-                console.log(
-                  chalk`{bgGreenBright.black  Successfully } downloaded: ${
-                    sub.filename
-                  }`,
-                );
-              } catch (e) {
-                console.log(
-                  chalk`{bgRedBright.black  Failure } downloading: ${
-                    sub.filename
-                  }`,
-                );
-              }
-            });
-          } else {
-            console.log(
-              chalk`{bgRedBright.black  Failure } subtitle not found for: ${
-                file.name
-              }`,
-            );
-          }
-        })
-        .then(() => {
-          const next = this.downloadList && this.downloadList.next();
-          if (next && next.done) {
-            process.exit();
-          }
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-
-      yield;
+      if (movieSubs.length) {
+        for (const sub of movieSubs) {
+          await this.download(sub, `${file.path}${sub.filename}`);
+          console.log(
+            chalk`{bgGreenBright.black  Successfully } downloaded: ${
+              sub.filename
+            }`,
+          );
+        }
+      } else {
+        console.log(
+          chalk`{bgRedBright.black  Failure } subtitle not found for: ${
+            file.name
+          }`,
+        );
+      }
     }
   }
 
