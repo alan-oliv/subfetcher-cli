@@ -9,28 +9,47 @@ export default class OpenSubtitles implements ISubtitleClient {
     this.intent = new opensubtitlesApi({ useragent: userAgent });
   }
 
-  public search = async (file: TreeFile): Promise<Subtitle[]> =>
+  public search = (
+    file: TreeFile,
+    languages: string[],
+  ): Subtitle[] =>
     this.intent
       .search({
-        sublanguageid: 'pob',
+        sublanguageid: languages.join(','),
         path: `${file.path}${file.name}.${file.extension}`,
         extensions: ['srt'],
         limit: 'all',
       })
       .then(async (sub: any) => {
-        if (sub.pb) {
-          const subsInLanguage: Subtitle[] = [];
-          sub.pb.forEach((languageSubtitle: any) => {
-            const languageItem = new Subtitle(
-              languageSubtitle.filename,
-              languageSubtitle.format,
-              languageSubtitle.url,
-              languageSubtitle.score,
-            );
-            subsInLanguage.push(languageItem);
-          });
+        const subsInLanguage: Subtitle[] = [];
+        const availableLanguages = Object.keys(sub);
 
-          return subsInLanguage;
-        }
+        availableLanguages.forEach((language: any) => {
+          const availableSubtitle = sub[language];
+          if (availableSubtitle.length) {
+            availableSubtitle.forEach((languageSubtitle: any) => {
+              subsInLanguage.push(
+                new Subtitle(
+                  languageSubtitle.filename,
+                  languageSubtitle.langcode,
+                  languageSubtitle.format,
+                  languageSubtitle.url,
+                  languageSubtitle.score,
+                ),
+              );
+            });
+          } else {
+            subsInLanguage.push(
+              new Subtitle(
+                availableSubtitle.filename,
+                availableSubtitle.langcode,
+                availableSubtitle.format,
+                availableSubtitle.url,
+                availableSubtitle.score,
+              ),
+            );
+          }
+        });
+        return subsInLanguage;
       })
 }
