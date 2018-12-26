@@ -9,48 +9,45 @@ export default class OpenSubtitles implements ISubtitleClient {
     this.intent = new opensubtitlesApi({ useragent: userAgent });
   }
 
-  //to do: become async
-  public search = (
+  public search = async (
     file: TreeFile,
-    languages: string[],
-  ): Subtitle[] =>
-    this.intent
-      .search({
-        sublanguageid: languages.join(','),
-        path: `${file.path}${file.name}.${file.extension}`,
-        extensions: ['srt'],
-        limit: 'all',
-      })
-      .then(async (sub: any) => {
-        const subsInLanguage: Subtitle[] = [];
-        const availableLanguages = Object.keys(sub);
+    languages: string[]
+  ): Promise<Subtitle[]> => {
+    const movieSubtitles: Subtitle[] = [];
+    const availableSubtitles = await this.intent.search({
+      sublanguageid: languages.join(','),
+      path: `${file.path}${file.name}.${file.extension}`,
+      extensions: ['srt'],
+      limit: 'all'
+    });
 
-        availableLanguages.forEach((language: any) => {
-          const availableSubtitle = sub[language];
-          if (availableSubtitle.length) {
-            availableSubtitle.forEach((languageSubtitle: any) => {
-              subsInLanguage.push(
-                new Subtitle(
-                  languageSubtitle.filename,
-                  languageSubtitle.langcode,
-                  languageSubtitle.format,
-                  languageSubtitle.url,
-                  languageSubtitle.score,
-                ),
-              );
-            });
-          } else {
-            subsInLanguage.push(
-              new Subtitle(
-                availableSubtitle.filename,
-                availableSubtitle.langcode,
-                availableSubtitle.format,
-                availableSubtitle.url,
-                availableSubtitle.score,
-              ),
-            );
-          }
+    const availableLanguages = Object.keys(availableSubtitles);
+    availableLanguages.forEach((language: any) => {
+      const subtitle = availableSubtitles[language];
+      if (subtitle.length) {
+        subtitle.forEach((languageSubtitle: any) => {
+          movieSubtitles.push(
+            new Subtitle(
+              languageSubtitle.filename,
+              languageSubtitle.langcode,
+              languageSubtitle.format,
+              languageSubtitle.url,
+              languageSubtitle.score
+            )
+          );
         });
-        return subsInLanguage;
-      })
+      } else {
+        movieSubtitles.push(
+          new Subtitle(
+            subtitle.filename,
+            subtitle.langcode,
+            subtitle.format,
+            subtitle.url,
+            subtitle.score
+          )
+        );
+      }
+    });
+    return movieSubtitles;
+  };
 }
