@@ -1,5 +1,5 @@
  import { IFileSystem } from '../interfaces';
- import * as Path from 'path';
+import * as Path from 'path';
 
 export default class Subtitle {
   public filename: string;

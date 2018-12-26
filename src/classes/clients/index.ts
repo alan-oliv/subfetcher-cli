@@ -1,3 +1,3 @@
-import OpenSubtitles from './open-subtitles';
+import openSubtitles from './open-subtitles';
 
-export { OpenSubtitles };
+export { openSubtitles };

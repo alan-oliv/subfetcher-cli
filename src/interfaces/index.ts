@@ -1,4 +1,4 @@
-import IFileSystem from './ifile-system';
-import ISubtitleClient from './isubtitle-client';
+import ifileSystem from './ifile-system';
+import isubtitleClient from './isubtitle-client';
 
-export { IFileSystem, ISubtitleClient };
+export { ifileSystem as IFileSystem, isubtitleClient as ISubtitleClient };

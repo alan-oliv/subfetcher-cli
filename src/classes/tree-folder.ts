@@ -5,8 +5,8 @@ import * as Path from 'path';
 export default class TreeFolder implements IFileSystem {
   path: string;
   name: string;
-  files?: Array<TreeFile> = [];
-  folders?: Array<TreeFolder> = [];
+  files?: TreeFile[] = [];
+  folders?: TreeFolder[] = [];
 
   constructor(path: string) {
     this.path = path;

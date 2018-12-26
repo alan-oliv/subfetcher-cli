@@ -1,7 +1,13 @@
-import Tree from './tree';
-import TreeFolder from './tree-folder';
-import TreeFile from './tree-file';
-import Subtitle from './subtitle';
-import SubtitleClient from './subtitle-client';
+import tree from './tree';
+import treeFolder from './tree-folder';
+import treeFile from './tree-file';
+import subtitle from './subtitle';
+import subtitleClient from './subtitle-client';
 
-export { Tree, TreeFolder, TreeFile, Subtitle, SubtitleClient };
+export {
+  tree as Tree,
+  treeFolder as TreeFolder,
+  treeFile as TreeFile,
+  subtitle as Subtitle,
+  subtitleClient as SubtitleClient,
+};

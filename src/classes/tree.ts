@@ -6,7 +6,7 @@ export default class Tree {
   private readonly megabytes: number = 1000000.0;
   private readonly path: string;
   private readonly recursive: boolean = true;
-  private readonly extensions?: Array<string>;
+  private readonly extensions?: string[];
   private treeContents: TreeFolder;
   private contents: any;
 
@@ -23,12 +23,12 @@ export default class Tree {
     return this.listContents(this.path);
   }
 
-  public foldersOnly(): Array<string> {
+  public foldersOnly(): string[] {
     this.contents = [];
     return this.listContents(this.path, true, false);
   }
 
-  public filesOnly(): Array<TreeFile> {
+  public filesOnly(): TreeFile[] {
     this.contents = [];
     return this.listContents(this.path, false, true);
   }
@@ -37,11 +37,11 @@ export default class Tree {
     path: string,
     foldersOnly: boolean = false,
     filesOnly: boolean = false,
-    nestedFolder?: TreeFolder
+    nestedFolder?: TreeFolder,
   ): any => {
     try {
-      const contents: Array<string> = fs.readdirSync(path);
-      contents.forEach(folder => {
+      const contents: string[] = fs.readdirSync(path);
+      contents.forEach((folder: any) => {
         const innerPath: string = Path.join(path, folder);
         const innerStat: any = this.listStats(innerPath);
         this.handleInnerStat(
@@ -49,7 +49,7 @@ export default class Tree {
           innerStat,
           foldersOnly,
           filesOnly,
-          nestedFolder
+          nestedFolder,
         );
       });
 
@@ -57,7 +57,7 @@ export default class Tree {
     } catch (e) {
       return e;
     }
-  };
+  }
 
   private listStats = (path: string): any => {
     try {
@@ -65,14 +65,14 @@ export default class Tree {
     } catch (e) {
       return e;
     }
-  };
+  }
 
   private handleInnerStat = (
     innerPath: string,
     innerStat: any,
     foldersOnly: boolean = false,
     filesOnly: boolean = false,
-    nestedFolder?: TreeFolder
+    nestedFolder?: TreeFolder,
   ): void => {
     try {
       const currentFolder = nestedFolder ? nestedFolder : this.treeContents;
@@ -104,5 +104,5 @@ export default class Tree {
     } catch (e) {
       return e;
     }
-  };
+  }
 }

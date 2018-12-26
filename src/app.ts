@@ -1,12 +1,12 @@
-import Fetch from 'commander';
-import Process from 'process';
-import Readline from 'readline';
+import commander from 'commander';
+import process from 'process';
+import readline from 'readline';
 import { Tree, TreeFile, SubtitleClient } from './classes';
-import { OpenSubtitles } from './classes/clients';
+import { openSubtitles } from './classes/clients';
 
 class Application {
   constructor(rdConfig: any, processConfig: any) {
-    rdConfig.emitKeypressEvents(Process.stdin);
+    rdConfig.emitKeypressEvents(process.stdin);
     processConfig.stdin.setRawMode && processConfig.stdin.setRawMode(true);
     processConfig.stdin.on('keypress', (str: any, key: any) => {
       if (key.ctrl && key.name === 'c') {
@@ -17,25 +17,25 @@ class Application {
 
   public init = ({
     path,
-    extensions
+    extensions,
   }: {
     path: string;
     extensions: string;
   }): void => {
     const fileTree: Tree = new Tree(path, true, extensions);
-    const movieFiles: Array<TreeFile> = fileTree.filesOnly();
+    const movieFiles: TreeFile[] = fileTree.filesOnly();
 
-    const OSClient = new OpenSubtitles();
-    const subManager = new SubtitleClient(OSClient);
+    const osClient = new openSubtitles();
+    const subManager = new SubtitleClient(osClient);
     subManager.get(movieFiles);
-  };
+  }
 }
 
-const App = new Application(Readline, Process);
+const app = new Application(readline, process);
 
-Fetch.version('0.0.1')
+commander.version('0.0.1')
   .option('-f, --path <required>', 'Tell me the path to your movies!')
   .option('-e, --extensions <required>', 'Tell me your movies extensions!')
-  .action(App.init);
+  .action(app.init);
 
-Fetch.parse(Process.argv);
+commander.parse(process.argv);
