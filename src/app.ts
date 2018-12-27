@@ -6,6 +6,18 @@ import { Tree, TreeFile, SubtitleClient } from './classes';
 import { OpenSubtitles } from './classes/clients';
 
 // to do: instanciante dinamically the client
+class Reflection {
+  constructor(private context: Object) {
+
+  }
+
+  Emit(name: string, ...args: any[]) {
+      var instance = Object.create(this.context[name].prototype);
+      instance.constructor.apply(instance, args);
+      return instance;
+  }
+}
+
 class Application {
   private readonly questions: object[];
 
@@ -42,53 +54,55 @@ class Application {
     client: string;
     languages: string;
   }): void => {
-    new Promise((resolve: any) => {
-      if (!path || !extensions || !languages) {
-        inquirer
-          .prompt(this.questions)
-          .then(
-            ({
-              path,
-              extensions,
-              client,
-            }: {
-              path: string;
-              extensions: string[];
-              client: string;
-            }) => {
-              resolve({ path, extensions, client });
-            },
-          );
-      } else {
-        const extensionsToArray = extensions
-          ? extensions.replace(/[ .]/g, '').split(',')
-          : [];
 
-        const languagesToArray = languages
-          ? languages.replace(/[ .]/g, '').split(',')
-          : [];
+    // new Promise((resolve: any) => {
+    //   if (!path || !extensions || !languages) {
+    //     inquirer
+    //       .prompt(this.questions)
+    //       .then(
+    //         ({
+    //           path,
+    //           extensions,
+    //           client,
+    //         }: {
+    //           path: string;
+    //           extensions: string[];
+    //           client: string;
+    //         }) => {
+    //           //get all languages here
+    //           //resolve({ path, extensions, client });
+    //         },
+    //       );
+    //   } else {
+    //     const extensionsToArray = extensions
+    //       ? extensions.replace(/[ .]/g, '').split(',')
+    //       : [];
 
-        resolve({ path, client, extensions: extensionsToArray, languages: languagesToArray });
-      }
-    }).then((resolve: any) => {
-      const {
-        path,
-        extensions,
-        client,
-        languages,
-      }: {
-        path: string;
-        extensions: string[];
-        client: string;
-        languages: string[];
-      } = resolve;
+    //     const languagesToArray = languages
+    //       ? languages.replace(/[ .]/g, '').split(',')
+    //       : [];
 
-      const fileTree: Tree = new Tree(path, true, extensions);
-      const movieFiles: TreeFile[] = fileTree.filesOnly();
-      const osClient = new OpenSubtitles();
-      const subManager = new SubtitleClient(osClient);
-      subManager.get(movieFiles, languages);
-    });
+    //     resolve({ path, client, extensions: extensionsToArray, languages: languagesToArray });
+    //   }
+    // }).then((resolve: any) => {
+    //   const {
+    //     path,
+    //     extensions,
+    //     client,
+    //     languages,
+    //   }: {
+    //     path: string;
+    //     extensions: string[];
+    //     client: string;
+    //     languages: string[];
+    //   } = resolve;
+
+    //   const fileTree: Tree = new Tree(path, true, extensions);
+    //   const movieFiles: TreeFile[] = fileTree.filesOnly();
+    //   const osClient = new OpenSubtitles();
+    //   const subManager = new SubtitleClient(osClient);
+    //   subManager.get(movieFiles, languages);
+    // });
   }
 }
 
@@ -106,8 +120,8 @@ commander
     'Desired subtitles languages',
   )
   .option(
-    '-c, --client <optional> (string)',
-    'Name of the desired search client (Opensubtitles is default)',
+    '-c, --client <required> (string)',
+    'Name of the desired search client',
   )
   .action(app.init);
 
