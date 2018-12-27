@@ -3,20 +3,6 @@ import process from 'process';
 import readline from 'readline';
 import inquirer from 'inquirer';
 import { Tree, TreeFile, SubtitleClient } from './classes';
-import { OpenSubtitles } from './classes/clients';
-
-// to do: instanciante dinamically the client
-class Reflection {
-  constructor(private context: Object) {
-
-  }
-
-  Emit(name: string, ...args: any[]) {
-      var instance = Object.create(this.context[name].prototype);
-      instance.constructor.apply(instance, args);
-      return instance;
-  }
-}
 
 class Application {
   private readonly questions: object[];
@@ -38,7 +24,13 @@ class Application {
         type: 'list',
         name: 'client',
         message: 'What client do you want to use?',
-        choices: ['Opensubtitles'],
+        choices: ['OpenSubtitles'],
+      },
+      {
+        type: 'checkbox',
+        name: 'languages',
+        message: 'In what languages you want to download your subtitles?',
+        choices: ['eng', 'pob'],
       },
     ];
   }
@@ -54,55 +46,57 @@ class Application {
     client: string;
     languages: string;
   }): void => {
+    new Promise((resolve: any) => {
+      if (!path || !extensions || !languages) {
+        inquirer
+          .prompt(this.questions)
+          .then(
+            async ({
+              path,
+              extensions,
+              client,
+              languages
+            }: {
+              path: string,
+              extensions: string[],
+              client: string,
+              languages: string[]
+            }) => {
+              //get all languages here
+              const { default: Client } = await import(`./classes/clients/${client}`);
+              resolve({ path, extensions, Client, languages });
+            },
+          );
+      } else {
+        const extensionsToArray = extensions
+          ? extensions.replace(/[ .]/g, '').split(',')
+          : [];
 
-    // new Promise((resolve: any) => {
-    //   if (!path || !extensions || !languages) {
-    //     inquirer
-    //       .prompt(this.questions)
-    //       .then(
-    //         ({
-    //           path,
-    //           extensions,
-    //           client,
-    //         }: {
-    //           path: string;
-    //           extensions: string[];
-    //           client: string;
-    //         }) => {
-    //           //get all languages here
-    //           //resolve({ path, extensions, client });
-    //         },
-    //       );
-    //   } else {
-    //     const extensionsToArray = extensions
-    //       ? extensions.replace(/[ .]/g, '').split(',')
-    //       : [];
+        const languagesToArray = languages
+          ? languages.replace(/[ .]/g, '').split(',')
+          : [];
 
-    //     const languagesToArray = languages
-    //       ? languages.replace(/[ .]/g, '').split(',')
-    //       : [];
+        resolve({ path, client, extensions: extensionsToArray, languages: languagesToArray });
+      }
+    }).then((resolve: any) => {
+      const {
+        path,
+        extensions,
+        Client,
+        languages,
+      }: {
+        path: string;
+        extensions: string[];
+        Client: FunctionConstructor;
+        languages: string[];
+      } = resolve;
 
-    //     resolve({ path, client, extensions: extensionsToArray, languages: languagesToArray });
-    //   }
-    // }).then((resolve: any) => {
-    //   const {
-    //     path,
-    //     extensions,
-    //     client,
-    //     languages,
-    //   }: {
-    //     path: string;
-    //     extensions: string[];
-    //     client: string;
-    //     languages: string[];
-    //   } = resolve;
-
-    //   const fileTree: Tree = new Tree(path, true, extensions);
-    //   const movieFiles: TreeFile[] = fileTree.filesOnly();
-    //   const osClient = new OpenSubtitles();
-    //   const subManager = new SubtitleClient(osClient);
-    //   subManager.get(movieFiles, languages);
-    // });
+      const fileTree: Tree = new Tree(path, true, extensions);
+      const movieFiles: TreeFile[] = fileTree.filesOnly();
+      const osClient = new Client();
+      const subManager = new SubtitleClient(osClient);
+      subManager.get(movieFiles, languages);
+    });
   }
 }
 

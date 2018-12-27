@@ -1,6 +1,6 @@
 import fs from 'fs';
 import * as Path from 'path';
-import { TreeFile, TreeFolder } from './';
+import { TreeFile, TreeFolder } from '.';
 
 export default class Tree {
   private readonly megabytes: number = 1000000.0;

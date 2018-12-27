@@ -1,8 +1,7 @@
-import { Subtitle, TreeFile } from '../classes';
+import { Subtitle, TreeFile } from '.';
 import http, { ClientRequest } from 'http';
 import fs from 'fs';
 import chalk from 'chalk';
-import process from 'process';
 
 export default class SubtitleClient {
   private downloadList?: any;
