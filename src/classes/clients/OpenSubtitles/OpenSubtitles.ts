@@ -1,6 +1,6 @@
 import opensubtitlesApi from 'opensubtitles-api';
-import { Subtitle, TreeFile } from '..';
-import { ISubtitleClient } from '../../interfaces';
+import { Subtitle, TreeFile } from '../..';
+import { ISubtitleClient } from '../../../interfaces';
 
 export default class OpenSubtitles implements ISubtitleClient {
   intent: any;

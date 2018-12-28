@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strictPropertyInitialization": false,
     "target": "es2018",
     "module": "commonjs",
     "sourceMap": true,
