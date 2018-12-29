@@ -13,38 +13,42 @@ export default class SubtitleClient {
 
   public get = (movieTree: TreeFile[], languages: string[]): void => {
     this.downloadList = this.search(movieTree, languages);
-  }
+  };
 
   public async search(
     folderContents: TreeFile[],
-    languages: string[],
+    languages: string[]
   ): Promise<void> {
-    for (const file of folderContents) {
-      console.log(chalk` \nSearching subtitles for {blue ${file.name}}`);
-      const movieSubs: Subtitle[] = await this.client.search(file, languages);
+    if (folderContents.length) {
+      for (const file of folderContents) {
+        console.log(chalk` \nSearching subtitles for {blue ${file.name}}`);
+        const movieSubs: Subtitle[] = await this.client.search(file, languages);
 
-      if (movieSubs.length) {
-        for (const sub of movieSubs) {
-          await this.download(sub, `${file.path}${sub.filename}`);
+        if (movieSubs.length) {
+          for (const sub of movieSubs) {
+            await this.download(sub, `${file.path}${sub.filename}`);
+            console.log(
+              chalk`{bgGreenBright.black  Successfully } downloaded: ${
+                sub.filename
+              }`
+            );
+          }
+        } else {
           console.log(
-            chalk`{bgGreenBright.black  Successfully } downloaded: ${
-              sub.filename
-            }`,
+            chalk`{bgRedBright.black  Failure } subtitle not found for: ${
+              file.name
+            }`
           );
         }
-      } else {
-        console.log(
-          chalk`{bgRedBright.black  Failure } subtitle not found for: ${
-            file.name
-          }`,
-        );
       }
+    } else {
+      console.log(chalk`{bgRedBright.black  Failure } there are no files with the especified extension here :/`);
     }
   }
 
   public download = async (
     file: Subtitle,
-    path: string,
+    path: string
   ): Promise<ClientRequest> => {
     const newFile = fs.createWriteStream(path);
     return http.get(file.url, (response: any) => {
@@ -53,5 +57,5 @@ export default class SubtitleClient {
         newFile.close();
       });
     });
-  }
+  };
 }

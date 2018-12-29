@@ -11,7 +11,7 @@
     "start": "node dist/App.js"
   },
   "bin": {
-    "cli-app": "fetch.js"
+    "cli-app": "dist/App.js"
   },
   "dependencies": {
     "@types/request": "^2.48.1",
@@ -24,5 +24,8 @@
     "tslint": "^5.12.0",
     "tslint-config-airbnb": "^5.11.1",
     "typescript": "^3.2.2"
+  },
+  "pkg": {
+    "scripts": "dist/**/*.js"
   }
 }
