@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "npx tsc --watch",
-    "lint": "npx tslint --project ./tsconfig.json 'src/**/*.ts'",
+    "lint": "npx tslint 'src/**/*.ts'",
     "start": "node dist/App.js"
   },
   "bin": {

@@ -1,5 +1,5 @@
 import opensubtitlesApi from 'opensubtitles-api';
-import { Subtitle, TreeFile } from '../..';
+import { Subtitle, TreeFile, Language } from '../..';
 import { ISubtitleClient } from '../../../interfaces';
 
 export default class OpenSubtitles implements ISubtitleClient {
@@ -9,17 +9,25 @@ export default class OpenSubtitles implements ISubtitleClient {
     this.intent = new opensubtitlesApi({ useragent: userAgent });
   }
 
+  public languages = async (): Promise<Language[]> => {
+    const allLanguages: Language[] = [];
+    const { data: availableLanguages } =  await this.intent.api.GetSubLanguages();
+    availableLanguages.forEach((language: any) => {
+      allLanguages.push(new Language(language.LanguageName, language.SubLanguageID));
+    });
+    return allLanguages;
+  }
+
   public search = async (
     file: TreeFile,
-    languages: string[]
+    languages: string[],
   ): Promise<Subtitle[]> => {
-    console.log(languages);
     const movieSubtitles: Subtitle[] = [];
     const availableSubtitles = await this.intent.search({
       sublanguageid: languages.join(','),
       path: `${file.path}${file.name}.${file.extension}`,
       extensions: ['srt'],
-      limit: 'all'
+      limit: 'all',
     });
 
     const availableLanguages = Object.keys(availableSubtitles);
@@ -33,8 +41,8 @@ export default class OpenSubtitles implements ISubtitleClient {
               languageSubtitle.langcode,
               languageSubtitle.format,
               languageSubtitle.url,
-              languageSubtitle.score
-            )
+              languageSubtitle.score,
+            ),
           );
         });
       } else {
@@ -44,11 +52,11 @@ export default class OpenSubtitles implements ISubtitleClient {
             subtitle.langcode,
             subtitle.format,
             subtitle.url,
-            subtitle.score
-          )
+            subtitle.score,
+          ),
         );
       }
     });
     return movieSubtitles;
-  };
+  }
 }
