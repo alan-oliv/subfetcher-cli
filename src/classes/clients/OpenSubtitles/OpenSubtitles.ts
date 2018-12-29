@@ -22,6 +22,7 @@ export default class OpenSubtitles implements ISubtitleClient {
     file: TreeFile,
     languages: string[],
   ): Promise<Subtitle[]> => {
+
     const movieSubtitles: Subtitle[] = [];
     const availableSubtitles = await this.intent.search({
       sublanguageid: languages.join(','),

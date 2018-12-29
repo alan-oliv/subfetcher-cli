@@ -3,9 +3,8 @@ import process from 'process';
 import readline from 'readline';
 import inquirer from 'inquirer';
 import fs from 'fs';
-import { Tree, TreeFile, SubtitleClient, Language } from './classes';
+import { Tree, TreeFile, SubtitleClient, Language, Convert } from './classes';
 import { ISubtitleClient } from './interfaces';
-import OpenSubtitles from './classes/clients/OpenSubtitles/OpenSubtitles';
 
 class Application {
   private client: ISubtitleClient;
@@ -14,44 +13,56 @@ class Application {
       type: 'input',
       name: 'path',
       message: 'What is the path to your movie folder?',
+      validate: (path: string) => {
+        const isValidPath = fs.existsSync(path);
+        return !isValidPath
+          ? `This doesn't seem to be a valid path :(`
+          : isValidPath;
+      }
     },
     {
       type: 'checkbox',
       name: 'extensions',
       message: 'Which movie extensions contains in this folder?',
-      choices: ['mp4', 'mkv', 'avi', 'rmvb', 'amv', 'm4v', 'rmvb'],
+      choices: ['mp4', 'mkv', 'avi', 'rmvb', 'amv', 'm4v', 'rmvb']
     },
     {
       type: 'list',
       name: 'client',
       message: 'What client do you want to use?',
-      choices: fs.readdirSync(`${__dirname}/classes/clients`),
+      choices: fs.readdirSync(`${__dirname}/classes/clients`)
     },
     {
       type: 'checkbox',
       name: 'languages',
       message: 'What languages do you want to download your subtitles?',
       choices: async ({ client }: { client: string }): Promise<Language[]> => {
-        const {
-          default: Client,
-        } = await import(`./classes/clients/${client}/${client}`);
-        this.client = new Client();
+        await this.importClientAsync(client);
         const allLanguages = await this.client.languages();
         return allLanguages;
-      },
-    },
+      }
+    }
   ];
+
+  private importClientAsync = async (client: string): Promise<void> => {
+    const {
+      default: Client
+    } = await import(`./classes/clients/${client}/${client}`);
+    this.client = new Client();
+  };
 
   public init = ({
     path,
+    client,
     extensions,
-    languages,
+    languages
   }: {
     path: string;
+    client: string;
     extensions: string;
     languages: string;
   }): void => {
-    new Promise((resolve: any) => {
+    new Promise(async (resolve: any) => {
       if (!path || !extensions || !languages) {
         inquirer
           .prompt(this.questions)
@@ -59,35 +70,29 @@ class Application {
             async ({
               path,
               extensions,
-              languages,
+              languages
             }: {
               path: string;
               extensions: string[];
               languages: Language[];
             }) => {
               resolve({ path, extensions, languages });
-            },
+            }
           );
       } else {
-        const extensionsToArray = extensions
-          ? extensions.replace(/[ .]/g, '').split(',')
-          : [];
-
-        const languagesToArray = languages
-          ? languages.replace(/[ .]/g, '').split(',')
-          : [];
+        await this.importClientAsync(client);
 
         resolve({
           path,
-          extensions: extensionsToArray,
-          languages: languagesToArray,
+          extensions: Convert.toArray(extensions),
+          languages: Convert.toArray(languages)
         });
       }
     }).then((resolve: any) => {
       const {
         path,
         extensions,
-        languages,
+        languages
       }: {
         path: string;
         extensions: string[];
@@ -99,7 +104,7 @@ class Application {
       const subManager = new SubtitleClient(this.client);
       subManager.get(movieFiles, languages);
     });
-  }
+  };
 }
 
 const app = new Application();
@@ -109,15 +114,15 @@ commander
   .option('-f, --path <required>', 'Tell me the path to your movies!')
   .option(
     '-e, --extensions <required> (string, comma separated)',
-    'Extensions that your movies are',
+    'Extensions that your movies are'
   )
   .option(
     '-l, --languages <required> (string, comma separated)',
-    'Desired subtitles languages',
+    'Desired subtitles languages'
   )
   .option(
     '-c, --client <required> (string)',
-    'Name of the desired search client',
+    'Name of the desired search client'
   )
   .action(app.init);
 

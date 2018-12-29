@@ -4,6 +4,7 @@ import TreeFile from './TreeFile';
 import Subtitle from './Subtitle';
 import SubtitleClient from './SubtitleClient';
 import Language from './Language';
+import Convert from './Convert';
 
 export {
   Tree,
@@ -12,4 +13,5 @@ export {
   Subtitle,
   Language,
   SubtitleClient,
+  Convert
 };
