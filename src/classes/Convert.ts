@@ -5,5 +5,5 @@ export default class Convert {
       filteredInput = input ? input.replace(/[ .]/g, '').split(',') : [];
     }
     return filteredInput;
-  };
+  }
 }

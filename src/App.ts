@@ -16,21 +16,21 @@ class Application {
       validate: (path: string) => {
         const isValidPath = fs.existsSync(path);
         return !isValidPath
-          ? `This doesn't seem to be a valid path :(`
+          ? `${path} doesn't seem to be a valid path :(`
           : isValidPath;
-      }
+      },
     },
     {
       type: 'checkbox',
       name: 'extensions',
       message: 'Which movie extensions contains in this folder?',
-      choices: ['mp4', 'mkv', 'avi', 'rmvb', 'amv', 'm4v', 'rmvb']
+      choices: ['mp4', 'mkv', 'avi', 'rmvb', 'amv', 'm4v', 'rmvb'],
     },
     {
       type: 'list',
       name: 'client',
       message: 'What client do you want to use?',
-      choices: fs.readdirSync(`${__dirname}/classes/clients`)
+      choices: fs.readdirSync(`${__dirname}/classes/clients`),
     },
     {
       type: 'checkbox',
@@ -40,22 +40,22 @@ class Application {
         await this.importClientAsync(client);
         const allLanguages = await this.client.languages();
         return allLanguages;
-      }
-    }
+      },
+    },
   ];
 
   private importClientAsync = async (client: string): Promise<void> => {
     const {
-      default: Client
+      default: Client,
     } = await import(`./classes/clients/${client}/${client}`);
     this.client = new Client();
-  };
+  }
 
   public init = ({
     path,
     client,
     extensions,
-    languages
+    languages,
   }: {
     path: string;
     client: string;
@@ -70,14 +70,14 @@ class Application {
             async ({
               path,
               extensions,
-              languages
+              languages,
             }: {
               path: string;
               extensions: string[];
               languages: Language[];
             }) => {
               resolve({ path, extensions, languages });
-            }
+            },
           );
       } else {
         await this.importClientAsync(client);
@@ -85,14 +85,14 @@ class Application {
         resolve({
           path,
           extensions: Convert.toArray(extensions),
-          languages: Convert.toArray(languages)
+          languages: Convert.toArray(languages),
         });
       }
     }).then((resolve: any) => {
       const {
         path,
         extensions,
-        languages
+        languages,
       }: {
         path: string;
         extensions: string[];
@@ -104,7 +104,7 @@ class Application {
       const subManager = new SubtitleClient(this.client);
       subManager.get(movieFiles, languages);
     });
-  };
+  }
 }
 
 const app = new Application();
@@ -114,15 +114,15 @@ commander
   .option('-f, --path <required>', 'Tell me the path to your movies!')
   .option(
     '-e, --extensions <required> (string, comma separated)',
-    'Extensions that your movies are'
+    'Extensions that your movies are',
   )
   .option(
     '-l, --languages <required> (string, comma separated)',
-    'Desired subtitles languages'
+    'Desired subtitles languages',
   )
   .option(
     '-c, --client <required> (string)',
-    'Name of the desired search client'
+    'Name of the desired search client',
   )
   .action(app.init);
 

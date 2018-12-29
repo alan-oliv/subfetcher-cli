@@ -13,5 +13,5 @@ export {
   Subtitle,
   Language,
   SubtitleClient,
-  Convert
+  Convert,
 };
