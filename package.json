@@ -11,7 +11,7 @@
     "start": "node dist/App.js"
   },
   "bin": {
-    "cli-app": "dist/App.js"
+    "subfetcher": "dist/App.js"
   },
   "dependencies": {
     "@types/request": "^2.48.1",
@@ -21,6 +21,7 @@
     "opensubtitles-api": "^4.1.0"
   },
   "devDependencies": {
+    "install-peers": "^1.0.3",
     "tslint": "^5.12.0",
     "tslint-config-airbnb": "^5.11.1",
     "typescript": "^3.2.2"

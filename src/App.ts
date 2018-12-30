@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import commander from 'commander';
 import process from 'process';
 import readline from 'readline';
