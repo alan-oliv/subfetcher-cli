@@ -4,10 +4,10 @@ If you have a media center using PLEX or another software and don't like searchi
 
 ## Quick overview
 
-If you like to run locally, clone the repo and install globally
+If you like to run locally, clone the repo and in the root folder type:
 
 ```bash
-npm i -g subfetcher
+npm i -g ./
 ```
 
 ## Usage
