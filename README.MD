@@ -30,6 +30,7 @@ Options:
 If you don't want to contribute and just want to use subfetcher for personal purposes, you can get the binaries and start using it right away!
 
 ## Roadmap
+- Handle client errors on fecthing methods
 - After first use, save settings on file and ask if the user want to repeat the same configuration.
 - Detect if folder already have subtitles and ask if you want to overwrite it or not
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
